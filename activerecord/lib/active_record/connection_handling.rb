@@ -1,7 +1,10 @@
 # frozen_string_literal: true
-
+# moduleで書かれているから、どこかのクラスにmix-inするはず。(仮定)
 module ActiveRecord
   module ConnectionHandling
+    # Rails ←→ DBのハンドリングをしている。(多分)
+    # = -> アロー演算子。Procオブジェクトを作っているのかな。
+    # Procオブジェクトを定数で管理？この狙いはなんだ。
     RAILS_ENV   = -> { (Rails.env if defined?(Rails.env)) || ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence }
     DEFAULT_ENV = -> { RAILS_ENV.call || "default_env" }
 
