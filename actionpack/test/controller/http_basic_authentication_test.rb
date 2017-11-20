@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+# Basic認証のテストコードか。
 require "abstract_unit"
 
 class HttpBasicAuthenticationTest < ActionController::TestCase

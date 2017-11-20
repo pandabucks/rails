@@ -23,6 +23,8 @@
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #++
 
+# このファイルが、require "active_record"で呼び出されるファイルである。
+# ActiveRecordは、ActiveSupportとActiveModelに依存している。
 require "active_support"
 require "active_support/rails"
 require "active_model"
@@ -35,6 +37,7 @@ require "active_model/attribute_set"
 module ActiveRecord
   extend ActiveSupport::Autoload
 
+  # autoloadはどういうメソッドだっけ？
   autoload :Base
   autoload :Callbacks
   autoload :Core

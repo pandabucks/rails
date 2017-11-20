@@ -1,5 +1,14 @@
 # frozen_string_literal: true
+# migrationで呼ばれるもの。
+# 自戒を込めて
+# 今までエラーに遭遇したら、エラーメッセージをネットで調べて見たいなことをしていた。けど、それは本質ではない。
+# 本質はRailsのソースコードを読んで、自分でエラーの状況を解釈すべきだった。
+# とはいえ初心者のうちは、Railsを使いこなすことが最優先課題なので、恣意的にそれらをしてこなかった。
+# 今日以降はなるべくRailsのソースコードを読んで理解すること。特に、自分が開発で行なっているところは重点的に行う。
+# Rubyのメタプログラミングの理解に非常に役立ちそうである。
 
+
+# このrequireの引数ってどこで呼ばれているんだ？？
 require "set"
 require "zlib"
 require "active_support/core_ext/module/attribute_accessors"
@@ -83,6 +92,8 @@ module ActiveRecord
   #       end
   #     end
   #   end
+
+  # ここら辺も驚き。確かに、誰も1file 1classとは言っていない。
   class IrreversibleMigration < MigrationError
   end
 
@@ -99,6 +110,7 @@ module ActiveRecord
   class DuplicateMigrationNameError < MigrationError#:nodoc:
     def initialize(name = nil)
       if name
+        # suberはオーバーライドしているメソッドを読んでくる。しかし、この場合は引数が文字列...
         super("Multiple migrations have the name #{name}.")
       else
         super("Duplicate migration name.")
@@ -513,7 +525,11 @@ module ActiveRecord
   #
   # Remember that you can still open your own transactions, even if you
   # are in a Migration with <tt>self.disable_ddl_transaction!</tt>.
+  # 
+  # 
+  # MigrationClassキタ
   class Migration
+    # autoloadはincludeするけど、参照された時点で読み込みを開始するらしい。
     autoload :CommandRecorder, "active_record/migration/command_recorder"
     autoload :Compatibility, "active_record/migration/compatibility"
 
@@ -531,6 +547,7 @@ module ActiveRecord
       end
     end
 
+    # メソッド名に[]はありなのか？
     def self.[](version)
       Compatibility.find(version)
     end

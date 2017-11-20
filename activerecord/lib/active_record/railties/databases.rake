@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# active_recordだけをrequireしている。
 require "active_record"
 
 db_namespace = namespace :db do
@@ -18,6 +19,11 @@ db_namespace = namespace :db do
     ActiveRecord::Migrator.migrations_paths = ActiveRecord::Tasks::DatabaseTasks.migrations_paths
   end
 
+  # rake db:createのこと。Consoleで実行しているけど、アプリケーション内でも実行できるのか。
+  # def index
+  #   ActiveRecord::Tasks::DatabaseTasks.create_all
+  # end
+  # みたいなことが、極論できてしまうということか。。。
   namespace :create do
     task all: :load_config do
       ActiveRecord::Tasks::DatabaseTasks.create_all
@@ -29,6 +35,7 @@ db_namespace = namespace :db do
     ActiveRecord::Tasks::DatabaseTasks.create_current
   end
 
+  # DBを削除するメソッド。
   namespace :drop do
     task all: [:load_config, :check_protected_environments] do
       ActiveRecord::Tasks::DatabaseTasks.drop_all
@@ -55,6 +62,7 @@ db_namespace = namespace :db do
     ActiveRecord::Tasks::DatabaseTasks.purge_current
   end
 
+  # これが、rake db:migrate
   desc "Migrate the database (options: VERSION=x, VERBOSE=false, SCOPE=blog)."
   task migrate: :load_config do
     ActiveRecord::Tasks::DatabaseTasks.migrate
@@ -245,6 +253,9 @@ db_namespace = namespace :db do
     end
   end
 
+  # bundle exec rake schema:dumpで行けつってことか。
+  # 違った。 rake db:schema:dumpだった。namespace: :dbに入っていた。
+  # このレベル感のことを1コマンドでやれるRailsの便利さを実感する。他のフレームワークは実行するか？
   namespace :schema do
     desc "Creates a db/schema.rb file that is portable against any DB supported by Active Record"
     task dump: :load_config do

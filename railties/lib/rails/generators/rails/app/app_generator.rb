@@ -235,6 +235,7 @@ module Rails
     RESERVED_NAMES = %w[application destroy plugin runner test]
 
     class AppGenerator < AppBase # :nodoc:
+      # 初めてvueが定義された。
       WEBPACKS = %w( react vue angular elm )
 
       add_shared_options_for "application"

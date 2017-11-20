@@ -1,10 +1,9 @@
 # frozen_string_literal: true
-# moduleで書かれているから、どこかのクラスにmix-inするはず。(仮定)
+# ActiveRecord::Baseから呼ばれる。ConnectionHandlingは、DBとのコネクションを司る。
 module ActiveRecord
   module ConnectionHandling
-    # Rails ←→ DBのハンドリングをしている。(多分)
     # = -> アロー演算子。Procオブジェクトを作っているのかな。
-    # Procオブジェクトを定数で管理？この狙いはなんだ。
+    # RAILS_ENVというProcオブジェクトを作っている。これって基本的には、.callで呼び出すことができる。
     RAILS_ENV   = -> { (Rails.env if defined?(Rails.env)) || ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence }
     DEFAULT_ENV = -> { RAILS_ENV.call || "default_env" }
 
@@ -49,6 +48,8 @@ module ActiveRecord
     #
     # The exceptions AdapterNotSpecified, AdapterNotFound and +ArgumentError+
     # may be returned on an error.
+
+    # このメソッドが、アプリケーションで多く呼ばれる。
     def establish_connection(config = nil)
       raise "Anonymous class is not allowed." unless name
 
@@ -66,6 +67,7 @@ module ActiveRecord
     class MergeAndResolveDefaultUrlConfig # :nodoc:
       def initialize(raw_configurations)
         @raw_config = raw_configurations.dup
+        #DEFAULT_ENV.call.to_sってなんだ。callがどこで呼ばれるか・・・。
         @env = DEFAULT_ENV.call.to_s
       end
 
@@ -117,6 +119,7 @@ module ActiveRecord
       connection_handler.retrieve_connection_pool(connection_specification_name) || raise(ConnectionNotEstablished)
     end
 
+    # connectionを行なっている
     def retrieve_connection
       connection_handler.retrieve_connection(connection_specification_name)
     end

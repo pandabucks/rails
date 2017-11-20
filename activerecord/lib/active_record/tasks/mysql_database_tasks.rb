@@ -2,6 +2,7 @@
 
 module ActiveRecord
   module Tasks # :nodoc:
+    # これが、
     class MySQLDatabaseTasks # :nodoc:
       delegate :connection, :establish_connection, to: ActiveRecord::Base
 

@@ -18,6 +18,8 @@ module ActiveRecord
     #       HasManyAssociation + ForeignAssociation
     #         HasManyThroughAssociation + ThroughAssociation
     class Association #:nodoc:
+      # 
+      # ActiveRecord::Associations::Associationみたいな感じか。
       attr_reader :owner, :target, :reflection
       attr_accessor :inversed
 

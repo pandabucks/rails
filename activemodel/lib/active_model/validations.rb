@@ -1,5 +1,7 @@
 # frozen_string_literal: true
-
+# アプリケーション側でどうデータを管理するかのValidation
+# このrequireの引数ってどう管理しているんだ...
+# ActiveRecord::Validationsからincludeされている。
 require "active_support/core_ext/array/extract_options"
 require "active_support/core_ext/hash/keys"
 require "active_support/core_ext/hash/except"
@@ -39,6 +41,7 @@ module ActiveModel
   module Validations
     extend ActiveSupport::Concern
 
+    # ここでも、included do ~ endが使われている。
     included do
       extend ActiveModel::Naming
       extend ActiveModel::Callbacks

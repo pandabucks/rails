@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ActiveModel
+  # これはよくincludeしたりするなー。
   # == Active \Model \Basic \Model
   #
   # Includes the required interface for an object to interact with

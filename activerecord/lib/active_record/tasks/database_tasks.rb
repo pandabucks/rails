@@ -2,6 +2,7 @@
 
 module ActiveRecord
   module Tasks # :nodoc:
+    # このclassの定義のやり方はまず思い浮かばないな...。
     class DatabaseAlreadyExists < StandardError; end # :nodoc:
     class DatabaseNotSupported < StandardError; end # :nodoc:
 
@@ -34,6 +35,7 @@ module ActiveRecord
     #   # other settings...
     #
     #   DatabaseTasks.create_current('production')
+    #   DatabaseTasksは、
     module DatabaseTasks
       ##
       # :singleton-method:

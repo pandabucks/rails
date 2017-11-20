@@ -84,14 +84,16 @@ module ActionView
       _render_template(options)
     end
 
+    # formmatがrenderされている。
     def rendered_format
       Template::Types[lookup_context.rendered_format]
     end
 
     private
-
+      # 全然関係ないけど、private以降はタブ開けているのはかなりgoodなきが。
       # Find and render a template based on the options given.
       def _render_template(options)
+        # Hash.delete(:hoge) でキー:hogeと対応するvalueを消す
         variant = options.delete(:variant)
         assigns = options.delete(:assigns)
         context = view_context

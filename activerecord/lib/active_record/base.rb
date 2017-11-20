@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+# ActiceRecord::Baseが、よくRailsのモデルの親クラスになるが、その中身のすべてである。
 
 require "yaml"
 require "active_support/benchmarkable"
@@ -112,6 +113,7 @@ module ActiveRecord #:nodoc:
   # When joining tables, nested hashes or keys written in the form 'table_name.column_name'
   # can be used to qualify the table name of a particular condition. For instance:
   #
+  # => 親子関係にあるモデルの検索条件
   #   Student.joins(:schools).where(schools: { category: 'public' })
   #   Student.joins(:schools).where('schools.category' => 'public' )
   #
@@ -275,11 +277,15 @@ module ActiveRecord #:nodoc:
   # So it's possible to assign a logger to the class through <tt>Base.logger=</tt> which will then be used by all
   # instances in the current object space.
   class Base
+    # base.rbがただrailsからincludeされていて、このbase.rbが様々なファイルをmix-inしている。
+    # ActiveRecord::Base.connection.tablesが呼ばれた時、ActiveRecord::Base.connectionのconnectionメソッドはどこから呼ばれているのか。
+
     extend ActiveModel::Naming
 
     extend ActiveSupport::Benchmarkable
     extend ActiveSupport::DescendantsTracker
 
+    # このextendしている、connectionHandingからconnectionメソッドが呼ばれる。
     extend ConnectionHandling
     extend QueryCache::ClassMethods
     extend Querying
@@ -290,7 +296,11 @@ module ActiveRecord #:nodoc:
     extend Delegation::DelegateCache
     extend CollectionCacheKey
 
+    # Coreの方が、ConnectionHandlingよりもメソッド呼び出しにおいて低いレイヤー？
+    # いや、includeとextenceの違い・・。
+    # includeは、クラスメソッドなどを継承する。（主に）？
     include Core
+    # ここでincludeされているPersistenceが、saveやsave!メソッドを作り上げている。
     include Persistence
     include ReadonlyAttributes
     include ModelSchema
@@ -302,6 +312,7 @@ module ActiveRecord #:nodoc:
     include Integration
     include Validations
     include CounterCache
+    # Attributesをインクルードしている。
     include Attributes
     include AttributeDecorators
     include Locking::Optimistic

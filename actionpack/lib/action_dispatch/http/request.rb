@@ -14,6 +14,8 @@ require "action_dispatch/http/upload"
 require "action_dispatch/http/url"
 require "active_support/core_ext/array/conversions"
 
+# moduleの中にclassが定義されている場合は？
+# 継承ツリーでは、Request < ActionDispatch　というのはわかるんだけど、そのあとincludeされているのがどこに入るのかがまた難しい。
 module ActionDispatch
   class Request
     include Rack::Request::Helpers
@@ -43,6 +45,7 @@ module ActionDispatch
         SERVER_ADDR
         ].freeze
 
+    # 動的にメソッドを作成している感じ..??
     ENV_METHODS.each do |env|
       class_eval <<-METHOD, __FILE__, __LINE__ + 1
         def #{env.sub(/^HTTP_/n, '').downcase}  # def accept_charset
@@ -55,6 +58,7 @@ module ActionDispatch
       new({})
     end
 
+    # 初期化されている。
     def initialize(env)
       super
       @method            = nil
@@ -68,12 +72,16 @@ module ActionDispatch
     def commit_cookie_jar! # :nodoc:
     end
 
+    # モジュールの中にクラスができている。てかこんな感じでClassが作れるんだ。
+    # PASS_NOT_FOUNDクラスができている。
+    # モジュールの中にあるクラスの中にクラスを作っている？
     PASS_NOT_FOUND = Class.new { # :nodoc:
       def self.action(_); self; end
       def self.call(_); [404, { "X-Cascade" => "pass" }, []]; end
       def self.binary_params_for?(action); false; end
     }
 
+    # Requestクラスのインスタンスメソッド
     def controller_class
       params = path_parameters
       params[:action] ||= "index"

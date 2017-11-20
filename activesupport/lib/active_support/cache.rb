@@ -291,6 +291,8 @@ module ActiveSupport
       #     :bar
       #   end
       #   cache.fetch('foo') # => "bar"
+      # よく使う、Rails.cache.fetchだ。
+      # optionsは、Rails全体の傾向から引数にハッシュを取っているんだと容易に想像ができる。
       def fetch(name, options = nil)
         if block_given?
           options = merged_options(options)
@@ -558,10 +560,12 @@ module ActiveSupport
         end
 
         # Merges the default options with ones specific to a method call.
+        # Rails.cache.fetchから呼ばれているメソッド
         def merged_options(call_options)
           if call_options
             options.merge(call_options)
           else
+            # dupは、レシーバをコピーしてそのまま返す
             options.dup
           end
         end

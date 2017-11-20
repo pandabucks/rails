@@ -53,6 +53,7 @@ class Hash
   #
   #   hash.symbolize_keys
   #   # => {:name=>"Rob", :age=>"28"}
+  # keyをシンボルに変換
   def symbolize_keys
     transform_keys { |key| key.to_sym rescue key }
   end

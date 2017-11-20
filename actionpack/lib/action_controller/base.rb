@@ -1,5 +1,9 @@
 # frozen_string_literal: true
-
+# Railsのアクション関係は全て、actionpackが担っている。その中で、actionviewはviewより、
+#
+#
+#
+#
 require "action_view"
 require "action_controller/log_subscriber"
 require "action_controller/metal/params_wrapper"
@@ -259,6 +263,7 @@ module ActionController
       @_view_renderer @_lookup_context @_routes @_view_runtime @_db_runtime @_helper_proxy
     )
 
+    # 
     def _protected_ivars # :nodoc:
       PROTECTED_IVARS
     end

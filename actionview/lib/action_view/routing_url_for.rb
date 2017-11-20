@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "action_dispatch/routing/polymorphic_routes"
-
+# ActionViewはRailsの中でViewの役割を中心に取り持つ。MVCの中でVCをつなぐのがイメージに近いのかな。
 module ActionView
   module RoutingUrlFor
     # Returns the URL for the set of +options+ provided. This takes the
@@ -41,6 +41,7 @@ module ActionView
     #   <%= url_for(action: 'login', controller: 'members', only_path: false, protocol: 'https') %>
     #   # => https://www.example.com/members/login/
     #
+    # => このanchorって便利だなぁ。
     #   <%= url_for(action: 'play', anchor: 'player') %>
     #   # => /messages/play/#player
     #
@@ -76,26 +77,35 @@ module ActionView
     #   <%= url_for(action: 'index', controller: '/users') %>
     #   # Specify absolute path with beginning slash
     #   # => /users
+    # url_forを定義している。
+    # options = nilって基本的にはオプションは取らない想定でいるのか。
+    # options = nil ってkey: :valueで与えられるときに使われる気がする。
     def url_for(options = nil)
       case options
+      # Stringだったとき。これは、文字列をそのまま返すから、正直意味ないやつ
       when String
         options
       when nil
         super(only_path: _generate_paths_by_default)
       when Hash
+        # symbolize_keys　でHASH化だよね。
+        # てかRails内部で、撮ったhashをシンボル化しているので、この処理は無駄なので、最初からシンボルで書くようにしましょうね。
         options = options.symbolize_keys
         unless options.key?(:only_path)
           options[:only_path] = only_path?(options[:host])
         end
-
+        # このsuperってなんだよぉおぉ。俺の理解だと、superに引数を取らないはず。superは、オーバーライド対象のメソッドの中身を呼ぶものだから
         super(options)
       when ActionController::Parameters
+        # .key?は普通に使えるな。 puts hoge[:sage] if hoge.key?(:sage) みたいに。
         unless options.key?(:only_path)
           options[:only_path] = only_path?(options[:host])
         end
 
         super(options)
       when :back
+        # _back_urlはなぜ、action_view/helperに定義されているのに、ここで読み込めているんだ？？
+        # requireはどこでされている・・・
         _back_url
       when Array
         components = options.dup
@@ -119,6 +129,7 @@ module ActionView
       end
     end
 
+    # return superってやばいな.....
     def url_options #:nodoc:
       return super unless controller.respond_to?(:url_options)
       controller.url_options
@@ -134,6 +145,7 @@ module ActionView
           controller.optimize_routes_generation? : super
       end
 
+      # これをメソッド化するのは可読性のためだと言い切れる。
       def _generate_paths_by_default
         true
       end

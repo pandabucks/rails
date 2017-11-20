@@ -15,14 +15,19 @@ module AbstractController
   end
 
   module Rendering
+    # railsの中でもActiveSupport::Concernって呼ばれているのか。
+    # こういうのを実際のプロダクトに切り出して、使っているのか。
     extend ActiveSupport::Concern
     include ActionView::ViewPaths
 
     # Normalizes arguments, options and then delegates render_to_body and
     # sticks the result in <tt>self.response_body</tt>.
+    # 抽象的なメソッドを理解するにはどうしたらいいんだろう。→多分抽象概念を頭で構築してから、コードを見るのが良い。仮設大事
     def render(*args, &block)
+      # renderの第一引数*argsはおそらくaction名が入るのかな。
       options = _normalize_render(*args, &block)
       rendered_body = render_to_body(options)
+      # optionsはおそらくhashで、htmlはそのキー。options[:html].exist?で場合分けしている。
       if options[:html]
         _set_html_content_type
       else
@@ -55,18 +60,21 @@ module AbstractController
       Mime[:text]
     end
 
+    # このインスタンス変数は守られているこういうサイン。シンボルの集合？
     DEFAULT_PROTECTED_INSTANCE_VARIABLES = Set.new %i(
       @_action_name @_response_body @_formats @_prefixes
     )
 
     # This method should return a hash with assigns.
     # You can overwrite this configuration per controller.
+    # This method seems important role amoung view and controller  I think,,,
     def view_assigns
       protected_vars = _protected_ivars
       variables      = instance_variables
 
       variables.reject! { |s| protected_vars.include? s }
       variables.each_with_object({}) { |name, hash|
+        # maybe slice instance variable after 2 letter
         hash[name.slice(1, name.length)] = instance_variable_get(name)
       }
     end
@@ -113,6 +121,7 @@ module AbstractController
     end
 
     # Normalize args and options.
+    # 引数とオプション?(オプションはハッシュかな？)を標準化しているという
     def _normalize_render(*args, &block) # :nodoc:
       options = _normalize_args(*args, &block)
       _process_variant(options)

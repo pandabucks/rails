@@ -112,6 +112,8 @@ module ActiveRecord
 
       class_attribute :default_connection_handler, instance_writer: false
 
+      # connection_handlerを返す。
+      # このモジュールをインクルードすると、このconnection_handlerが継承先でクラスメソッドとして、普通に使えるようになる。
       def self.connection_handler
         ActiveRecord::RuntimeRegistry.connection_handler || default_connection_handler
       end

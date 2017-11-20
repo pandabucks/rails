@@ -1,6 +1,8 @@
 # frozen_string_literal: true
+# Http_authenticationのソースコード
 
 require "base64"
+# activesupportのsecurity周り？
 require "active_support/security_utils"
 
 module ActionController
@@ -65,9 +67,11 @@ module ActionController
       extend self
 
       module ControllerMethods
+        # このActiveSupportを読み込むことへの具体的なメリットが知りたい。
         extend ActiveSupport::Concern
 
         module ClassMethods
+          # このメソッド読むことで、railsでBasic認証を可能にしている。
           def http_basic_authenticate_with(options = {})
             before_action(options.except(:name, :password, :realm)) do
               authenticate_or_request_with_http_basic(options[:realm] || "Application") do |name, password|
